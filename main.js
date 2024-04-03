@@ -20,15 +20,17 @@ buttons.forEach((button) => {
 
 let numberButtons = document.querySelectorAll('.number-button');
 numberButtons.forEach((button) => {
-  console.log(button.id)
   button.addEventListener('click', (event) => {
+    
     if (displayIsClear && event.target.textContent === '.') {
+      display.dispatchEvent(displayFilled);
       display.textContent = '0.';
       displayIsClear = false;
       return;
     }
     
     if (displayIsClear) {
+      display.dispatchEvent(displayFilled);
       display.textContent = event.target.textContent;
       displayIsClear = false;
       return;
@@ -37,9 +39,7 @@ numberButtons.forEach((button) => {
     if (event.target.textContent === '.' && display.textContent.includes('.')) {
       return;
     }
-  
     
-
     display.textContent += event.target.textContent
   })
 })
@@ -58,7 +58,7 @@ operatorButtons.forEach((button) => {
       button.classList.add('focused');
     }
 
-    if (OPERATORS.includes(previousClickedButton.textContent)) {
+    if (OPERATORS.includes(previousClickedButton.textContent) || displayIsClear) {
       currentOperator = event.target.textContent;
       return;
     }
@@ -76,18 +76,37 @@ operatorButtons.forEach((button) => {
       currentOperator = null;
       storedNumber = 0;
     }
-
   })
 })
 
+const displayFilled = new Event("displayFilled");
+const displayCleared = new Event("displayCleared");
 
-function clear() {
-  display.textContent = 0;
-  storedNumber = 0;
-  displayIsClear = true;
-  currentOperator = null;
-  document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
-}
+const clearButton = document.querySelector('#c-button');
+clearButton.addEventListener('click', (event) => {
+  if (event.target.textContent === 'AC') {
+    display.textContent = 0;
+    storedNumber = 0;
+    displayIsClear = true;
+    currentOperator = null;
+    document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
+  } else if (event.target.textContent === 'C') {
+    display.textContent = 0;
+    displayIsClear = true;
+  }
+
+  display.dispatchEvent(displayCleared);
+})
+
+display.addEventListener('displayFilled', () => {
+  clearButton.textContent = 'C';
+
+})
+
+display.addEventListener('displayCleared', () => {
+  clearButton.textContent = 'AC';
+})
+
 
 function calculate(operator, operandOne, operandTwo) {
   switch (operator) {
@@ -110,5 +129,6 @@ function calculate(operator, operandOne, operandTwo) {
       break;
     case '=':
       return operandOne;
+      break;
   }
 }
