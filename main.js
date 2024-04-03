@@ -55,6 +55,10 @@ operatorButtons.forEach((button) => {
     }
 
     let numberOnDisplay = +display.textContent;
+    console.log('display: ' + numberOnDisplay);
+    console.log('stored: ' + storedNumber);
+    console.log(currentOperator + '\n');
+    
 
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
     if (button.textContent !== '=') {
@@ -110,6 +114,10 @@ display.addEventListener('displayCleared', () => {
   clearButton.textContent = 'AC';
 })
 
+const signButton = document.querySelector('#sign-button');
+signButton.addEventListener('click', () => {
+  display.textContent = -display.textContent;
+})
 
 function calculate(operator, operandOne, operandTwo) {
   switch (operator) {
