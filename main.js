@@ -21,6 +21,9 @@ buttons.forEach((button) => {
 let numberButtons = document.querySelectorAll('.number-button');
 numberButtons.forEach((button) => {
   button.addEventListener('click', (event) => {
+    if (displayIsClear && event.target.textContent === '0') {
+      return;
+    }
     
     if (displayIsClear && event.target.textContent === '.') {
       display.dispatchEvent(displayFilled);
