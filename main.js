@@ -47,10 +47,16 @@ numberButtons.forEach((button) => {
 let operatorButtons = document.querySelectorAll('.operator-button');
 operatorButtons.forEach((button) => {
   button.addEventListener('click', (event) => {
+    if (display.textContent === 'Error') {
+      return;
+    }
+
     let numberOnDisplay = +display.textContent;
 
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
-    button.classList.add('focused');
+    if (button.textContent !== '=') {
+      button.classList.add('focused');
+    }
 
     if (OPERATORS.includes(previousClickedButton.textContent)) {
       currentOperator = event.target.textContent;
@@ -60,21 +66,27 @@ operatorButtons.forEach((button) => {
     if (currentOperator) {
       numberOnDisplay = calculate(currentOperator, storedNumber, numberOnDisplay);
     }
-    
 
     display.textContent = numberOnDisplay;
     storedNumber = numberOnDisplay;
     currentOperator = event.target.textContent !== '=' ? event.target.textContent : null;
     displayIsClear = true;
+
+    if (numberOnDisplay === 'Error') {
+      currentOperator = null;
+      storedNumber = 0;
+    }
+
   })
 })
 
 
-function clearDisplay() {
+function clear() {
   display.textContent = 0;
   storedNumber = 0;
   displayIsClear = true;
   currentOperator = null;
+  document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
 }
 
 function calculate(operator, operandOne, operandTwo) {
@@ -89,9 +101,14 @@ function calculate(operator, operandOne, operandTwo) {
       return operandOne * operandTwo;
       break;
     case '/':
-      return operandOne / operandTwo
+      if (operandTwo === 0) {
+        operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
+        currentOperator = null;
+        return 'Error';
+      }
+      return operandOne / operandTwo;
       break;
     case '=':
-      return operandOne
+      return operandOne;
   }
 }
