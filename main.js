@@ -55,17 +55,13 @@ operatorButtons.forEach((button) => {
     }
 
     let numberOnDisplay = +display.textContent;
-    console.log('display: ' + numberOnDisplay);
-    console.log('stored: ' + storedNumber);
-    console.log(currentOperator + '\n');
-    
 
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
     if (button.textContent !== '=') {
       button.classList.add('focused');
     }
 
-    if (OPERATORS.includes(previousClickedButton.textContent) || displayIsClear) {
+    if (OPERATORS.includes(previousClickedButton?.textContent) || displayIsClear) {
       currentOperator = event.target.textContent;
       return;
     }
@@ -114,9 +110,11 @@ display.addEventListener('displayCleared', () => {
   clearButton.textContent = 'AC';
 })
 
+// the same issue with stored number being not what it should be
+// should fix it maybe on a different branch but with something simpler like with /10 instead of 
 const signButton = document.querySelector('#sign-button');
 signButton.addEventListener('click', () => {
-  display.textContent = -display.textContent;
+  display.textContent = display.textContent / 10;
 })
 
 function calculate(operator, operandOne, operandTwo) {
