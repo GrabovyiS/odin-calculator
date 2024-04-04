@@ -82,6 +82,7 @@ operatorButtons.forEach((button) => {
     }
     
     if (OPERATORS.includes(previousClickedButton?.textContent) || displayIsClear) {
+      storedNumber = +display.textContent;
       currentOperator = event.target.textContent;
       return;
     }
