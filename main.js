@@ -5,7 +5,7 @@ const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 const OPERATORS = ['/', 'x', '-', '+'];
 
 let displayIsClear = true;
-let storedNumber = 0;
+let storedNumber = null;
 let currentOperator;
 let clickedButton;
 let previousClickedButton;
@@ -54,31 +54,40 @@ operatorButtons.forEach((button) => {
       return;
     }
 
-    let numberOnDisplay = +display.textContent;
-
     operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
     if (button.textContent !== '=') {
       button.classList.add('focused');
     }
-
+    
     if (OPERATORS.includes(previousClickedButton?.textContent) || displayIsClear) {
       currentOperator = event.target.textContent;
       return;
     }
+    
+    let numberOnDisplay = +display.textContent;
 
     if (currentOperator) {
       numberOnDisplay = calculate(currentOperator, storedNumber, numberOnDisplay);
+      display.textContent = numberOnDisplay;
     }
-
-    display.textContent = numberOnDisplay;
-    storedNumber = numberOnDisplay;
-    currentOperator = event.target.textContent !== '=' ? event.target.textContent : null;
-    displayIsClear = true;
-
+    
     if (numberOnDisplay === 'Error') {
       currentOperator = null;
-      storedNumber = 0;
+      storedNumber = null;
+      // should the display be clear?
+      return;
     }
+
+    if (event.target.textContent === '=') {
+      storedNumber = null;
+      currentOperator = null;
+      displayIsClear = true;
+      return;
+    }
+    
+    storedNumber = numberOnDisplay;
+    currentOperator = event.target.textContent;
+    displayIsClear = true;
   })
 })
 
@@ -110,11 +119,14 @@ display.addEventListener('displayCleared', () => {
   clearButton.textContent = 'AC';
 })
 
-// the same issue with stored number being not what it should be
-// should fix it maybe on a different branch but with something simpler like with /10 instead of 
+
 const signButton = document.querySelector('#sign-button');
 signButton.addEventListener('click', () => {
-  display.textContent = display.textContent / 10;
+  if (currentOperator) {
+    displayIsClear = false;
+  }
+
+  display.textContent = -display.textContent;
 })
 
 function calculate(operator, operandOne, operandTwo) {
