@@ -21,7 +21,22 @@ buttons.forEach((button) => {
 let numberButtons = document.querySelectorAll('.number-button');
 numberButtons.forEach((button) => {
   button.addEventListener('click', (event) => {
+    // allow to enter a zero after an operator  
     if (displayIsClear && event.target.textContent === '0') {
+      display.textContent = '0';
+      displayIsClear = false;
+      display.dispatchEvent(displayFilled);
+      return;
+    }
+
+    // prevent stacking leading zeroes
+    if (display.textContent === '0' && event.target.textContent === '0') {
+      return;
+    } 
+    
+    if (display.textContent === '0' && event.target.textContent !== '0') {
+      display.textContent = event.target.textContent === '.' ? '0.' : event.target.textContent;
+      displayIsClear = false;
       return;
     }
     
@@ -113,7 +128,6 @@ clearButton.addEventListener('click', (event) => {
       display.dispatchEvent(displayCleared);
     }
   }
-
 })
 
 display.addEventListener('displayFilled', () => {
