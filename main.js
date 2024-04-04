@@ -4,7 +4,11 @@ const display = document.querySelector('#display');
 const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 const OPERATORS = ['/', 'x', '-', '+'];
 
+const errorAudio = new Audio('./error.wav');
+
+const backspaceButton = document.querySelector('#backspace-button');
 let displayIsClear = true;
+disableBackspaceButton();
 let storedNumber = null;
 let currentOperator;
 let clickedButton;
@@ -37,6 +41,7 @@ numberButtons.forEach((button) => {
     if (display.textContent === '0' && event.target.textContent !== '0') {
       display.textContent = event.target.textContent === '.' ? '0.' : event.target.textContent;
       displayIsClear = false;
+      enableBackspaceButton();
       return;
     }
     
@@ -44,6 +49,7 @@ numberButtons.forEach((button) => {
       display.dispatchEvent(displayFilled);
       display.textContent = '0.';
       displayIsClear = false;
+      enableBackspaceButton();
       return;
     }
     
@@ -51,6 +57,7 @@ numberButtons.forEach((button) => {
       display.dispatchEvent(displayFilled);
       display.textContent = event.target.textContent;
       displayIsClear = false;
+      enableBackspaceButton();
       return;
     }
     
@@ -90,6 +97,7 @@ operatorButtons.forEach((button) => {
       currentOperator = null;
       storedNumber = null;
       displayIsClear = true;
+      disableBackspaceButton();
       return;
     }
 
@@ -97,12 +105,14 @@ operatorButtons.forEach((button) => {
       storedNumber = null;
       currentOperator = null;
       displayIsClear = true;
+      disableBackspaceButton();
       return;
     }
     
     storedNumber = numberOnDisplay;
     currentOperator = event.target.textContent;
     displayIsClear = true;
+    disableBackspaceButton();
   })
 })
 
@@ -115,6 +125,7 @@ clearButton.addEventListener('click', (event) => {
     display.textContent = 0;
     storedNumber = 0;
     displayIsClear = true;
+    disableBackspaceButton();
     currentOperator = null;
     document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
     display.dispatchEvent(displayCleared);
@@ -125,6 +136,7 @@ clearButton.addEventListener('click', (event) => {
     } else {
       display.textContent = 0;
       displayIsClear = true;
+      disableBackspaceButton();
       display.dispatchEvent(displayCleared);
     }
   }
@@ -144,8 +156,9 @@ const signButton = document.querySelector('#sign-button');
 signButton.addEventListener('click', () => {
   if (currentOperator) {
     displayIsClear = false;
+    enableBackspaceButton();
   }
-
+  
   display.textContent = -display.textContent;
 })
 
@@ -154,12 +167,26 @@ const percentButton = document.querySelector('#percent-button');
 percentButton.addEventListener('click', (event) => {
   if (currentOperator) {
     displayIsClear = false;
+    enableBackspaceButton();
   }
-  
+
   if (currentOperator === '+' || currentOperator === '-') {
     display.textContent = decimalPrecision(storedNumber * display.textContent / 100);
   } else {
     display.textContent = decimalPrecision(display.textContent / 100);
+  }
+})
+
+backspaceButton.addEventListener('click', (event) => {
+  if (event.target.inactive) {
+    errorAudio.play();
+    return;
+  }
+
+  if (display.textContent.length === 1) {
+    display.textContent = 0;
+  } else {
+    display.textContent = display.textContent.slice(0, -1);
   }
 })
 
@@ -191,4 +218,14 @@ function calculate(operator, operandOne, operandTwo) {
 
 function decimalPrecision(number) {
   return Number(number.toFixed(6));
+}
+
+function disableBackspaceButton() {
+  backspaceButton.inactive = true;
+  backspaceButton.classList.add('action-inactive');
+}
+
+function enableBackspaceButton() {
+  backspaceButton.inactive = false;
+  backspaceButton.classList.remove('action-inactive');
 }

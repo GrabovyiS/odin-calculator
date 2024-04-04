@@ -51,6 +51,7 @@ body {
 }
 
 .button.action-button {
+  transition: all 0.3s ease-out;
   background-color: rgb(109, 0, 98);
   color: white;
 }
@@ -61,4 +62,12 @@ body {
 
 .focused {
   border: 2px solid #EFEFEF;
+}
+
+.button.action-button.action-inactive {
+  background-color: rgb(85, 57, 83);
+}
+
+#equals-button {
+  width: 310px;
 }
