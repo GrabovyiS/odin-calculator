@@ -87,14 +87,11 @@ operatorButtons.forEach((button) => {
       return;
     }
     
-    let numberOnDisplay = +display.textContent;
-
     if (currentOperator) {
-      numberOnDisplay = calculate(currentOperator, storedNumber, numberOnDisplay);
-      display.textContent = numberOnDisplay;
+      display.textContent = calculate(currentOperator, storedNumber, +display.textContent);
     }
     
-    if (numberOnDisplay === 'Error') {
+    if (display.textContent === 'Error') {
       currentOperator = null;
       storedNumber = null;
       displayIsClear = true;
@@ -110,7 +107,7 @@ operatorButtons.forEach((button) => {
       return;
     }
     
-    storedNumber = numberOnDisplay;
+    storedNumber = +display.textContent;
     currentOperator = event.target.textContent;
     displayIsClear = true;
     disableBackspaceButton();
