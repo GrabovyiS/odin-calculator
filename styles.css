@@ -41,20 +41,34 @@ body {
   height: 60px;
   box-sizing: border-box;
   padding: 0;
-  background-color: #EFEFEF;
   border: none;
   font-size: 24px;
 }
 
+.button.number-button {
+  background-color: #EFEFEF;
+}
+
+.button.number-button.number-pressed {
+  background-color: #c7c7c7;
+}
+
 .button.operator-button {
-  background-color: rgb(171, 77, 0);
+  background-color: rgb(198, 89, 0);
   color: white;
 }
 
+.button.operator-button.operator-pressed {
+  background-color: rgb(124, 56, 0);
+}
+
 .button.action-button {
-  transition: all 0.3s ease-out;
   background-color: rgb(109, 0, 98);
   color: white;
+}
+
+.button.action-button.action-pressed {
+  background-color: rgb(61, 0, 56);
 }
 
 .button.wide-button {
@@ -65,7 +79,7 @@ body {
   border: 2px solid #EFEFEF;
 }
 
-.button.action-button.action-inactive {
+#backspace-button.action-inactive {
   background-color: rgb(85, 57, 83);
 }
 

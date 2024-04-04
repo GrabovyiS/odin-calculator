@@ -216,44 +216,87 @@ backspaceButton.addEventListener('click', (event) => {
   } else {
     display.textContent = display.textContent.slice(0, -1);
   }
-})
+});
+
+
+numberButtons.forEach((numberButton) => {
+  numberButton.addEventListener('mousedown', (event) => {
+    event.target.classList.add('number-pressed');
+  });
+
+  numberButton.addEventListener('mouseup', (event) => {
+    event.target.classList.remove('number-pressed');
+  });
+});
+
+operatorButtons.forEach((operatorButton) => {
+  operatorButton.addEventListener('mousedown', (event) => {
+    event.target.classList.add('operator-pressed');
+  });
+
+  operatorButton.addEventListener('mouseup', (event) => {
+    event.target.classList.remove('operator-pressed');
+  });
+});
+
+const actionButtons = [clearButton, signButton, percentButton, backspaceButton];
+actionButtons.forEach((actionButton) => {
+  actionButton.addEventListener('mousedown', (event) => {
+    event.target.classList.add('action-pressed');
+  });
+
+  actionButton.addEventListener('mouseup', (event) => {
+    event.target.classList.remove('action-pressed');
+  });
+});
 
 const body = document.querySelector('body');
 const artificialClickEvent = new Event('click');
 const buttonsTextContents = [...buttons].map((button) => (button.textContent));
 
 body.addEventListener('keydown', (event) => {
+  document.activeElement.blur();
+
   let keyPressed = event.key;
   if (keyPressed === '*') {
     keyPressed = 'x';
   }
 
-  let correspondingButton = null;
-  
-  if (buttonsTextContents.includes(keyPressed)) {
-    correspondingButton = [...buttons].find((button) => (button.textContent === keyPressed));
-  }
-
-  switch (keyPressed) {
-    case 'Backspace':
-      correspondingButton = document.querySelector('#backspace-button');
-      break;
-    
-    case 'Escape':
-      correspondingButton = document.querySelector('#clear-button');
-      break;
-
-    case 'Enter':
-      correspondingButton = document.querySelector('#equals-button');
-      break;
-
-    case '=':
-      correspondingButton = document.querySelector('#equals-button');
-      break;
-  }
+  let correspondingButton = getCorrespondingButton(keyPressed);
 
   if (correspondingButton) {
     correspondingButton.dispatchEvent(artificialClickEvent);
+
+    if (correspondingButton.classList.contains('number-button')) {
+      correspondingButton.classList.add('number-pressed');
+    }
+    else if (correspondingButton.classList.contains('operator-button')) {
+      correspondingButton.classList.add('operator-pressed');
+    }
+    else if (correspondingButton.classList.contains('action-button')) {
+      correspondingButton.classList.add('action-pressed');
+    }
+  }
+})
+
+body.addEventListener('keyup', (event) => {
+  let keyPressed = event.key;
+  if (keyPressed === '*') {
+    keyPressed = 'x';
+  }
+
+  let correspondingButton = getCorrespondingButton(keyPressed);
+
+  if (correspondingButton) {
+    if (correspondingButton.classList.contains('number-button')) {
+      correspondingButton.classList.remove('number-pressed');
+    }
+    else if (correspondingButton.classList.contains('operator-button')) {
+      correspondingButton.classList.remove('operator-pressed');
+    }
+    else if (correspondingButton.classList.contains('action-button')) {
+      correspondingButton.classList.remove('action-pressed');
+    }
   }
 })
 
@@ -294,4 +337,32 @@ function disableBackspaceButton() {
 function enableBackspaceButton() {
   backspaceButton.inactive = false;
   backspaceButton.classList.remove('action-inactive');
+}
+
+function getCorrespondingButton(keyPressed) {
+  let correspondingButton = null;
+
+  if (buttonsTextContents.includes(keyPressed)) {
+    correspondingButton = [...buttons].find((button) => (button.textContent === keyPressed));
+  }
+
+  switch (keyPressed) {
+    case 'Backspace':
+      correspondingButton = document.querySelector('#backspace-button');
+      break;
+    
+    case 'Escape':
+      correspondingButton = document.querySelector('#clear-button');
+      break;
+
+    case 'Enter':
+      correspondingButton = document.querySelector('#equals-button');
+      break;
+
+    case '=':
+      correspondingButton = document.querySelector('#equals-button');
+      break;
+  }
+
+  return correspondingButton;
 }
