@@ -102,12 +102,18 @@ clearButton.addEventListener('click', (event) => {
     displayIsClear = true;
     currentOperator = null;
     document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
+    display.dispatchEvent(displayCleared);
   } else if (event.target.textContent === 'C') {
-    display.textContent = 0;
-    displayIsClear = true;
+    if (displayIsClear && currentOperator) {
+      currentOperator = null;
+      operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
+    } else {
+      display.textContent = 0;
+      displayIsClear = true;
+      display.dispatchEvent(displayCleared);
+    }
   }
 
-  display.dispatchEvent(displayCleared);
 })
 
 display.addEventListener('displayFilled', () => {
