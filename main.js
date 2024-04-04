@@ -13,6 +13,7 @@ let storedNumber = null;
 let currentOperator;
 let clickedButton;
 let previousClickedButton;
+let justClearedDisplay;
 
 let buttons = document.querySelectorAll('.button');
 buttons.forEach((button) => {
@@ -32,7 +33,7 @@ numberButtons.forEach((button) => {
       display.dispatchEvent(displayFilled);
       return;
     }
-
+    
     // prevent stacking leading zeroes
     if (display.textContent === '0' && event.target.textContent === '0') {
       return;
@@ -42,6 +43,7 @@ numberButtons.forEach((button) => {
       display.textContent = event.target.textContent === '.' ? '0.' : event.target.textContent;
       displayIsClear = false;
       enableBackspaceButton();
+      display.dispatchEvent(displayFilled);
       return;
     }
     
@@ -104,6 +106,7 @@ operatorButtons.forEach((button) => {
       currentOperator = null;
       displayIsClear = true;
       disableBackspaceButton();
+      display.dispatchEvent(displayCleared);
       return;
     }
     
@@ -120,22 +123,48 @@ const displayCleared = new Event("displayCleared");
 const clearButton = document.querySelector('#c-button');
 clearButton.addEventListener('click', (event) => {
   if (event.target.textContent === 'AC') {
-    display.textContent = 0;
+    display.textContent = '0';
     storedNumber = 0;
     displayIsClear = true;
     disableBackspaceButton();
     currentOperator = null;
     document.querySelectorAll('.operator-button').forEach((operatorButton) => operatorButton.classList.remove('focused'));
     display.dispatchEvent(displayCleared);
-  } else if (event.target.textContent === 'C') {
+    return;
+  }
+  
+  if (event.target.textContent === 'C') {
+    // On the first number or after =
+    if ((!displayIsClear && !currentOperator) || (displayIsClear && !currentOperator)) {
+      display.textContent = '0';
+      displayIsClear = true;
+      display.dispatchEvent(displayCleared);
+      disableBackspaceButton();
+    }
+    
+    // Right after pressing an operator
     if (displayIsClear && currentOperator) {
+      if (justClearedDisplay) {
+        displayIsClear = false;
+        justClearedDisplay = false;
+        display.textContent = storedNumber;
+        display.dispatchEvent(displayCleared);
+      } else {
+        displayIsClear = false;
+      }
+
+      enableBackspaceButton();
       currentOperator = null;
       operatorButtons.forEach((operatorButton) => operatorButton.classList.remove('focused'));
-    } else {
-      display.textContent = 0;
+      return;
+    }
+    
+    // After pressing an operator and typing a new number
+    if (!displayIsClear && currentOperator) {
+      justClearedDisplay = true;
+      display.textContent = '0';
       displayIsClear = true;
       disableBackspaceButton();
-      display.dispatchEvent(displayCleared);
     }
   }
 })
