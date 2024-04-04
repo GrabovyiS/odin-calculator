@@ -43,7 +43,7 @@ numberButtons.forEach((button) => {
       return;
     }
     
-    display.textContent += event.target.textContent
+    display.textContent += event.target.textContent;
   })
 })
 
@@ -138,13 +138,13 @@ signButton.addEventListener('click', () => {
 function calculate(operator, operandOne, operandTwo) {
   switch (operator) {
     case '+':
-      return operandOne + operandTwo;
+      return decimalPrecision(operandOne + operandTwo);
       break;
     case '-':
-      return operandOne - operandTwo;
+      return decimalPrecision(operandOne - operandTwo);
       break;
     case 'x':
-      return operandOne * operandTwo;
+      return decimalPrecision(operandOne * operandTwo);
       break;
     case '/':
       if (operandTwo === 0) {
@@ -152,10 +152,14 @@ function calculate(operator, operandOne, operandTwo) {
         currentOperator = null;
         return 'Error';
       }
-      return operandOne / operandTwo;
+      return decimalPrecision(operandOne / operandTwo);
       break;
     case '=':
       return operandOne;
       break;
   }
+}
+
+function decimalPrecision(number) {
+  return Number(number.toFixed(6));
 }
