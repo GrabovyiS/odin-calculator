@@ -149,6 +149,21 @@ signButton.addEventListener('click', () => {
   display.textContent = -display.textContent;
 })
 
+
+const percentButton = document.querySelector('#percent-button');
+percentButton.addEventListener('click', (event) => {
+  if (currentOperator) {
+    displayIsClear = false;
+  }
+  
+  if (currentOperator === '+' || currentOperator === '-') {
+    display.textContent = decimalPrecision(storedNumber * display.textContent / 100);
+  } else {
+    display.textContent = decimalPrecision(display.textContent / 100);
+  }
+})
+
+
 function calculate(operator, operandOne, operandTwo) {
   switch (operator) {
     case '+':
