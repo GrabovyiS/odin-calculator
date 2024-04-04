@@ -120,7 +120,7 @@ operatorButtons.forEach((button) => {
 const displayFilled = new Event("displayFilled");
 const displayCleared = new Event("displayCleared");
 
-const clearButton = document.querySelector('#c-button');
+const clearButton = document.querySelector('#clear-button');
 clearButton.addEventListener('click', (event) => {
   if (event.target.textContent === 'AC') {
     display.textContent = '0';
