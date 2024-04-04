@@ -4,6 +4,9 @@
 
 body {
   background-color: black;
+  height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 #calculator {
