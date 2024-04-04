@@ -74,7 +74,7 @@ operatorButtons.forEach((button) => {
     if (numberOnDisplay === 'Error') {
       currentOperator = null;
       storedNumber = null;
-      // should the display be clear?
+      displayIsClear = true;
       return;
     }
 
