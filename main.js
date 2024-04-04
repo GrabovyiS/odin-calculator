@@ -2,7 +2,7 @@ const buttonsContainer = document.querySelector('#buttons-container');
 const display = document.querySelector('#display');
 
 const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
-const OPERATORS = ['/', 'x', '-', '+'];
+const OPERATORS = ['/', 'x', '*', '-', '+'];
 
 const errorAudio = new Audio('./error.wav');
 
@@ -217,6 +217,44 @@ backspaceButton.addEventListener('click', (event) => {
   }
 })
 
+const body = document.querySelector('body');
+const artificialClickEvent = new Event('click');
+const buttonsTextContents = [...buttons].map((button) => (button.textContent));
+
+body.addEventListener('keydown', (event) => {
+  let keyPressed = event.key;
+  if (keyPressed === '*') {
+    keyPressed = 'x';
+  }
+
+  let correspondingButton = null;
+  
+  if (buttonsTextContents.includes(keyPressed)) {
+    correspondingButton = [...buttons].find((button) => (button.textContent === keyPressed));
+  }
+
+  switch (keyPressed) {
+    case 'Backspace':
+      correspondingButton = document.querySelector('#backspace-button');
+      break;
+    
+    case 'Escape':
+      correspondingButton = document.querySelector('#clear-button');
+      break;
+
+    case 'Enter':
+      correspondingButton = document.querySelector('#equals-button');
+      break;
+
+    case '=':
+      correspondingButton = document.querySelector('#equals-button');
+      break;
+  }
+
+  if (correspondingButton) {
+    correspondingButton.dispatchEvent(artificialClickEvent);
+  }
+})
 
 function calculate(operator, operandOne, operandTwo) {
   switch (operator) {
