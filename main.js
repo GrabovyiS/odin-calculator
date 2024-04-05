@@ -218,24 +218,17 @@ backspaceButton.addEventListener('click', (event) => {
   }
 });
 
+const body = document.querySelector('body');
 
 numberButtons.forEach((numberButton) => {
   numberButton.addEventListener('mousedown', (event) => {
     event.target.classList.add('number-pressed');
-  });
-
-  numberButton.addEventListener('mouseup', (event) => {
-    event.target.classList.remove('number-pressed');
   });
 });
 
 operatorButtons.forEach((operatorButton) => {
   operatorButton.addEventListener('mousedown', (event) => {
     event.target.classList.add('operator-pressed');
-  });
-
-  operatorButton.addEventListener('mouseup', (event) => {
-    event.target.classList.remove('operator-pressed');
   });
 });
 
@@ -244,13 +237,22 @@ actionButtons.forEach((actionButton) => {
   actionButton.addEventListener('mousedown', (event) => {
     event.target.classList.add('action-pressed');
   });
-
-  actionButton.addEventListener('mouseup', (event) => {
-    event.target.classList.remove('action-pressed');
-  });
 });
 
-const body = document.querySelector('body');
+body.addEventListener('mouseup', (event) => {
+  buttons.forEach((button) => {
+    if (button.classList.contains('number-button')) {
+      button.classList.remove('number-pressed');
+    }
+    else if (button.classList.contains('operator-button')) {
+      button.classList.remove('operator-pressed');
+    }
+    else if (button.classList.contains('action-button')) {
+      button.classList.remove('action-pressed');
+    }
+  })
+})
+
 const artificialClickEvent = new Event('click');
 const buttonsTextContents = [...buttons].map((button) => (button.textContent));
 
